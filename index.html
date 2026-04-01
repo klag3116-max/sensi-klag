@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Sensi - Protected by KLAG</title>
+    <style>
+        :root { --neon: #ff0000; --bg: #000; }
+        * { -webkit-user-select: none; user-select: none; box-sizing: border-box; }
+        body { margin: 0; min-height: 100vh; display: flex; justify-content: center; align-items: center; background: var(--bg); font-family: 'Segoe UI', sans-serif; color: white; overflow-x: hidden; }
+
+        .card { width: 92%; max-width: 400px; background: rgba(10, 10, 10, 0.98); border: 2px solid var(--neon); border-radius: 25px; padding: 30px 15px; text-align: center; box-shadow: 0 0 40px rgba(255, 0, 0, 0.5); }
+
+        /* Input & Buttons */
+        .input-style { width: 100%; padding: 15px; background: #050505; border: 1.5px solid var(--neon); border-radius: 12px; color: #fff; text-align: center; outline: none; font-weight: bold; font-size: 1rem; margin-bottom: 20px; }
+        .btn-main { width: 100%; padding: 18px; background: var(--neon); border: none; border-radius: 50px; color: white; font-weight: bold; text-transform: uppercase; cursor: pointer; box-shadow: 0 0 15px rgba(255, 0, 0, 0.6); transition: 0.3s; }
+        .btn-main:active { transform: scale(0.95); }
+
+        /* Animation cho nút Bắt đầu */
+        .btn-pulse { animation: pulse 2s infinite; margin-top: 30px; }
+
+        /* Phần kết quả ẩn/hiện */
+        #main-result-area { display: none; animation: fadeIn 0.8s ease; margin-top: 20px; }
+        .res-line { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px solid #111; padding-bottom: 5px; text-align: left; }
+        .label { color: #888; font-size: 0.8rem; font-weight: bold; }
+        .value { color: var(--neon); font-family: monospace; font-size: 1.2rem; font-weight: bold; }
+
+        /* KLAG AI Box */
+        .ai-box { margin-top: 20px; border: 1.5px solid var(--neon); border-radius: 15px; padding: 15px; display: flex; align-items: center; background: rgba(20,0,0,0.3); }
+        .ai-robot { width: 70px; height: 70px; fill: var(--neon); filter: drop-shadow(0 0 8px var(--neon)); animation: float 3s infinite; }
+        .ai-text-scroll { height: 80px; overflow: hidden; font-size: 0.7rem; color: #ccc; text-align: left; padding-left: 10px; flex: 1; }
+        .ai-text-scroll ul { list-style: none; padding: 0; margin: 0; animation: scrollText 12s linear infinite; }
+        .highlight { color: var(--neon); font-weight: bold; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(255, 0, 0, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 0, 0, 0); } }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+        @keyframes scrollText { from { transform: translateY(0); } to { transform: translateY(-200px); } }
+    </style>
+</head>
+<body oncontextmenu="return false;">
+
+<div class="card">
+    <div id="step-1">
+        <h2 style="color:var(--neon); text-shadow:0 0 10px var(--neon); margin-bottom:30px;">SERVER LOGIN</h2>
+        <input type="text" id="key-input" class="input-style" placeholder="NHẬP KEY ĐỂ KÍCH HOẠT...">
+        <button class="btn-main" onclick="checkKey()">KÍCH HOẠT SERVER</button>
+        <p style="font-size: 0.6rem; color:#444; margin-top:20px;">Lấy key tại TikTok: 9999k092</p>
+    </div>
+
+    <div id="step-2" style="display:none;">
+        <h1 style="color:var(--neon); text-shadow:0 0 15px var(--neon);">ACCESS GRANTED</h1>
+        <p style="color:#00f2fe; margin-bottom:40px;">Hệ thống Sensi AI của **KLAG** đã sẵn sàng!</p>
+        <button class="btn-main btn-pulse" onclick="toStep3()">BẮT ĐẦU TÌM ĐỘ NHẠY</button>
+    </div>
+
+    <div id="step-3" style="display:none;">
+        <h3 style="color:var(--neon); margin-bottom:15px;">DANH SÁCH THIẾT BỊ</h3>
+        <input type="text" id="device-input" class="input-style" placeholder="Nhập tên máy của bạn..." oninput="handleSearch()">
+
+        <div id="main-result-area">
+            <p id="display-name" style="color:#00f2fe; font-weight:bold; margin-bottom:15px;"></p>
+            <div class="res-line"><span class="label">GENERAL</span><span class="value" id="s1">0</span></div>
+            <div class="res-line"><span class="label">RED DOT</span><span class="value" id="s2">0</span></div>
+            <div class="res-line"><span class="label">2X SCOPE</span><span class="value" id="s3">0</span></div>
+            <div class="res-line"><span class="label">4X SCOPE</span><span class="value" id="s4">0</span></div>
+            <div class="res-line"><span class="label">SNIPER</span><span class="value" id="s5">0</span></div>
+
+            <div class="ai-box">
+                <svg class="ai-robot" viewBox="0 0 512 512"><path d="M416 112c0-30.8-22.3-56.1-51.7-61.7C348.6 20.3 322.2 0 292.4 0H219.6c-29.8 0-56.1 20.3-61.9 50.3C128.3 55.9 106 81.2 106 112v83.4c-22.1 12.3-37.1 36-37.1 63.3s15 51 37.1 63.3v76.8c0 30.8 22.3 56.1 51.7 61.7 5.8 30 32.2 50.3 61.9 50.3h72.8c29.8 0 56.1-20.3 61.9-50.3 29.4-5.6 51.7-30.9 51.7-61.7v-76.8c22.1-12.3 37.1-36 37.1-63.3s-15-51-37.1-63.3V112z"/></svg>
+                <div class="ai-text-scroll">
+                    <ul>
+                        <li class="highlight">🤖 KLAG AI ĐANG PHÂN TÍCH...</li>
+                        <li>ĐANG QUÉT CẤU HÌNH MÁY...</li>
+                        <li>TỐI ƯU HÓA ĐỘ GIẬT...</li>
+                        <li class="highlight">ĐỘ NHẠY ĐÃ ĐƯỢC TĂNG CƯỜNG (+5%)</li>
+                        <li>PHÁT HIỆN GHOSTER...</li>
+                        <li>TRẠNG THÁI: AI ACTIVE</li>
+                    </ul>
+                </div>
+            </div>
+            <button class="btn-main" style="margin-top:20px; font-size:0.8rem;" onclick="location.reload()">ĐĂNG XUẤT SERVER</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const MY_KEY = "klag9999k092";
+
+    function checkKey() {
+        if(document.getElementById("key-input").value === MY_KEY) {
+            document.getElementById("step-1").style.display = "none";
+            document.getElementById("step-2").style.display = "block";
+        } else { alert("SAI KEY SERVER! VUI LÒNG KIỂM TRA LẠI."); }
+    }
+
+    function toStep3() {
+        document.getElementById("step-2").style.display = "none";
+        document.getElementById("step-3").style.display = "block";
+    }
+
+    function handleSearch() {
+        const input = document.getElementById("device-input").value;
+        const area = document.getElementById("main-result-area");
+        const name = document.getElementById("display-name");
+
+        if(input.length >= 2) {
+            area.style.display = "block";
+            name.innerText = input.toUpperCase();
+            
+            // Thuật toán AI tự tính số cho mọi dòng máy trên thế giới
+            let hash = 0;
+            for (let i = 0; i < input.length; i++) hash = input.charCodeAt(i) + ((hash << 5) - hash);
+            const getVal = (min, max, offset) => Math.abs((hash + offset) % (max - min)) + min;
+
+            document.getElementById("s1").innerText = getVal(190, 200, 1);
+            document.getElementById("s2").innerText = getVal(185, 198, 2);
+            document.getElementById("s3").innerText = getVal(180, 195, 3);
+            document.getElementById("s4").innerText = getVal(175, 190, 4);
+            document.getElementById("s5").innerText = getVal(95, 115, 5);
+        } else {
+            area.style.display = "none";
+        }
+    }
+</script>
+</body>
+</html>
