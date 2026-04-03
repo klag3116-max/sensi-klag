@@ -1,169 +1,280 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KLAG AI - SMART RECOGNITION</title>
-    <style>
-        :root {
-            --neon: #00f2fe; --deep-blue: #020617;
-            --glass-bg: rgba(255, 255, 255, 0.05);
-            --border-color: rgba(0, 242, 254, 0.3);
-        }
-        body {
-            background-color: var(--deep-blue); color: white; margin: 0; padding: 10px;
-            font-family: 'Lexend', sans-serif; display: flex; flex-direction: column; align-items: center;
-            min-height: 100vh; overflow-x: hidden; user-select: none;
-        }
-        .main-card {
-            width: 100%; max-width: 500px; background: var(--glass-bg);
-            backdrop-filter: blur(20px); border-radius: 35px; border: 1px solid var(--border-color);
-            padding-bottom: 30px; box-shadow: 0 0 50px rgba(0, 242, 254, 0.1);
-            margin-top: 20px; position: relative;
-        }
-        .header {
-            padding: 35px 20px; text-align: center;
-            background: linear-gradient(180deg, rgba(0, 242, 254, 0.1), transparent);
-            border-radius: 35px 35px 0 0;
-        }
-        .header h1 { margin: 0; font-size: 1.8rem; font-weight: 900; letter-spacing: 2px; color: #fff; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KLAG AI V4 ULTIMATE</title>
 
-        /* Khung quét nhận diện */
-        .scanner-box {
-            position: relative; width: 150px; height: 150px; margin: 20px auto;
-            border: 2px solid var(--border-color); border-radius: 20px; overflow: hidden;
-            display: none;
-        }
-        .scanner-line {
-            position: absolute; width: 100%; height: 3px; background: var(--neon);
-            box-shadow: 0 0 15px var(--neon); animation: scanLoop 1.5s infinite;
-        }
-        @keyframes scanLoop { 0% { top: 0; } 100% { top: 100%; } }
+<style>
+body{
+    margin:0;
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-family:Segoe UI;
+    color:white;
+    background: linear-gradient(-45deg,#020617,#020617,#0f172a,#020617);
+    background-size:400% 400%;
+    animation:bgMove 10s ease infinite;
+}
 
-        /* Input Section */
-        .search-area { padding: 0 30px; }
-        .ai-input {
-            width: 100%; padding: 20px; background: rgba(0,0,0,0.6);
-            border: 1px solid var(--border-color); border-radius: 15px;
-            color: var(--neon); font-size: 1.1rem; text-align: center; outline: none;
-        }
+@keyframes bgMove{
+    0%{background-position:0% 50%;}
+    50%{background-position:100% 50%;}
+    100%{background-position:0% 50%;}
+}
 
-        /* Result Panel */
-        #result-panel { display: none; padding: 20px 30px; animation: fadeInUp 0.5s ease; }
-        .info-tag {
-            background: rgba(0, 242, 254, 0.1); padding: 10px; border-radius: 12px;
-            margin-bottom: 20px; font-size: 0.8rem; text-align: center; border: 1px solid var(--border-color);
-        }
+.card{
+    background:rgba(15,23,42,0.75);
+    backdrop-filter:blur(25px);
+    border-radius:25px;
+    padding:20px;
+    width:360px;
+    text-align:center;
+    border:1px solid rgba(255,255,255,0.1);
+    box-shadow:0 0 50px rgba(59,130,246,0.3);
+}
 
-        .sensi-item {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 15px 0; border-bottom: 1px solid rgba(255,255,255,0.05);
-        }
-        .sensi-item span:last-child { font-size: 1.4rem; font-weight: 800; color: var(--neon); }
-        
-        .fire-button {
-            background: linear-gradient(45deg, #00d2ff, #3a7bd5);
-            padding: 22px; border-radius: 18px; text-align: center;
-            font-weight: 900; font-size: 1.3rem; margin-top: 20px;
-        }
+h2{
+    margin:0;
+    font-size:18px;
+    background:linear-gradient(90deg,#3b82f6,#22c55e);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+}
 
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        .footer { text-align: center; font-size: 0.65rem; color: #475569; margin-top: 30px; }
-    </style>
+.status{
+    font-size:12px;
+    color:#38bdf8;
+    margin:6px 0;
+}
+
+/* scan text */
+.scan{
+    font-size:12px;
+    color:#22c55e;
+    height:16px;
+    position:relative;
+    overflow:hidden;
+}
+
+.scan::after{
+    content:"AI SCANNING DEVICE...";
+    position:absolute;
+    width:100%;
+    animation:scanText 2s steps(20) infinite;
+}
+
+@keyframes scanText{
+    from{clip-path:inset(0 100% 0 0);}
+    to{clip-path:inset(0 0 0 0);}
+}
+
+select,input{
+    width:100%;
+    padding:12px;
+    margin:6px 0;
+    border-radius:12px;
+    border:none;
+    background:rgba(255,255,255,0.05);
+    color:white;
+    outline:none;
+}
+
+button{
+    width:100%;
+    padding:12px;
+    margin-top:6px;
+    border:none;
+    border-radius:12px;
+    font-weight:bold;
+    cursor:pointer;
+    background:linear-gradient(90deg,#3b82f6,#22c55e);
+    color:white;
+    transition:0.3s;
+}
+
+button:hover{
+    transform:scale(1.05);
+    box-shadow:0 0 20px #3b82f6;
+}
+
+.loading{
+    height:4px;
+    width:100%;
+    background:rgba(255,255,255,0.1);
+    border-radius:10px;
+    overflow:hidden;
+    margin-top:10px;
+    display:none;
+}
+
+.loading div{
+    height:100%;
+    width:0%;
+    background:#22c55e;
+    animation:load 2s linear forwards;
+}
+
+@keyframes load{
+    from{width:0%;}
+    to{width:100%;}
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin-top:10px;
+}
+
+.box{
+    background:rgba(255,255,255,0.05);
+    padding:10px;
+    border-radius:12px;
+    border:1px solid rgba(255,255,255,0.1);
+    transition:0.3s;
+}
+
+.box:hover{
+    transform:scale(1.05);
+    box-shadow:0 0 15px #22c55e;
+}
+
+@keyframes fade{
+    from{opacity:0; transform:translateY(10px);}
+    to{opacity:1; transform:translateY(0);}
+}
+</style>
 </head>
-<body oncontextmenu="return false;">
 
-<div class="main-card">
-    <div class="header">
-        <h1 id="title">KLAG RECOGNITION</h1>
-        <p style="font-size: 0.7rem; opacity: 0.6;">AI IDENTIFICATION SYSTEM v8.0</p>
-    </div>
+<body>
 
-    <div class="search-area">
-        <input type="text" id="userInput" class="ai-input" placeholder="NHẬP TÊN MÁY..." oninput="startRecognition()">
-    </div>
+<div class="card">
+    <h2>KLAG AI V4 ULTIMATE</h2>
 
-    <div class="scanner-box" id="scanner">
-        <div class="scanner-line"></div>
-        <div style="position: absolute; width: 100%; top: 40%; text-align: center; font-size: 0.6rem; opacity: 0.5;">IDENTIFYING...</div>
-    </div>
+    <div class="scan"></div>
+    <div id="info" class="status">Đang phân tích...</div>
 
-    <div id="result-panel">
-        <div class="info-tag" id="chip-detect">PHÁT HIỆN: CHIPSET TIÊU CHUẨN</div>
-        
-        <div class="sensi-item"><span>NHÌN XUNG QUANH</span><span id="s1">0</span></div>
-        <div class="sensi-item"><span>RED DOT SIGHT</span><span id="s2">0</span></div>
-        <div class="sensi-item"><span>SCOPE 2X/4X</span><span id="s3">0</span></div>
-        
-        <div class="sensi-item" style="border-bottom:none">
-            <span style="color: #fbbf24;">DPI ĐỀ XUẤT</span>
-            <span id="sdpi" style="color: #fbbf24;">--</span>
+    <select id="style">
+        <option value="normal">Bình thường</option>
+        <option value="fast">Lia nhanh</option>
+        <option value="slow">Kéo chậm</option>
+    </select>
+
+    <input type="number" id="fps" placeholder="FPS (auto nếu trống)">
+
+    <input type="range" min="-10" max="10" value="0" id="tune">
+
+    <button onclick="analyze()">PHÂN TÍCH AI</button>
+    <button onclick="runFPSTest()">TEST FPS</button>
+
+    <div class="loading" id="loadingBar"><div></div></div>
+    <div id="fpsResult" class="status"></div>
+
+    <div id="result" style="display:none;">
+        <div class="grid">
+            <div class="box">Xung quanh: <b id="v1"></b></div>
+            <div class="box">Red dot: <b id="v2"></b></div>
+            <div class="box">2x: <b id="v3"></b></div>
+            <div class="box">4x: <b id="v4"></b></div>
+            <div class="box">Sniper: <b id="v5"></b></div>
+            <div class="box">Free look: <b id="v6"></b></div>
         </div>
-
-        <div class="fire-button" id="sfire">NÚT BẮN: --%</div>
     </div>
-</div>
-
-<div class="footer">
-    MANAGED BY GEMINI AI & ADMIN KLAG<br>
-    © 2026 KLAG GLOBAL SECURITY
 </div>
 
 <script>
-let scanTimeout;
 
-function startRecognition() {
-    const input = document.getElementById("userInput").value;
-    const scanner = document.getElementById("scanner");
-    const panel = document.getElementById("result-panel");
+// detect power
+function detectPower(){
+    let ram = navigator.deviceMemory || 4;
+    let cores = navigator.hardwareConcurrency || 4;
+    let score = ram * 2 + cores;
 
-    if(input.length < 2) {
-        scanner.style.display = "none";
-        panel.style.display = "none";
-        return;
-    }
-
-    // Hiệu ứng "đang nhận diện"
-    panel.style.display = "none";
-    scanner.style.display = "block";
-
-    clearTimeout(scanTimeout);
-    scanTimeout = setTimeout(() => {
-        executeAI(input.toLowerCase());
-    }, 1500);
+    if(score >= 16) return "high";
+    if(score >= 10) return "mid";
+    return "low";
 }
 
-function executeAI(q) {
-    document.getElementById("scanner").style.display = "none";
-    document.getElementById("result-panel").style.display = "block";
+let devicePower = detectPower();
 
-    let base = 94, dpi = 411, chip = "STANDARD ARM PROCESSOR";
+document.getElementById("info").innerText =
+"RAM: " + (navigator.deviceMemory || "?") +
+"GB | CPU: " + (navigator.hardwareConcurrency || "?") +
+" | Level: " + devicePower.toUpperCase();
 
-    // Nhận diện thông minh
-    if(q.includes("iphone") || q.includes("ios")) {
-        base = 98; dpi = "DEFAULT"; chip = "APPLE A-SERIES BIONIC (NEURAL)";
-    } else if(q.includes("a56") || q.includes("samsung")) {
-        base = 96; dpi = 450; chip = "EXYNOS 1580 OCTA-CORE (2026)";
-    } else if(q.includes("8 gen") || q.includes("elite")) {
-        base = 100; dpi = 560; chip = "SNAPDRAGON 8 ELITE (ULTRA)";
+// FPS test
+function runFPSTest(){
+    let start = performance.now();
+    let frames = 0;
+
+    function loop(){
+        frames++;
+        if(performance.now() - start < 1000){
+            requestAnimationFrame(loop);
+        } else {
+            document.getElementById("fpsResult").innerText =
+            "FPS: " + frames;
+            document.getElementById("fps").value = frames;
+        }
     }
-
-    document.getElementById("chip-detect").innerText = "ĐÃ NHẬN DIỆN: " + chip;
-    document.getElementById("s1").innerText = base;
-    document.getElementById("s2").innerText = base - 5;
-    document.getElementById("s3").innerText = base - 12;
-    document.getElementById("sdpi").innerText = dpi;
-    document.getElementById("sfire").innerText = "NÚT BẮN: " + (43 + Math.floor(Math.random() * 8)) + "%";
+    loop();
 }
 
-// BẢO MẬT: CHỐNG COI CODE CAO CẤP
-document.onkeydown = (e) => {
-    if (e.keyCode == 123 || (e.ctrlKey && e.shiftKey && (e.keyCode == 'I'.charCodeAt(0) || e.keyCode == 'C'.charCodeAt(0))) || (e.ctrlKey && e.keyCode == 'U'.charCodeAt(0))) {
-        alert("KLAG AI: Truy cập bị từ chối. Hệ thống đã được mã hóa!");
-        return false;
+// analyze
+function analyze(){
+    let load = document.getElementById("loadingBar");
+    let result = document.getElementById("result");
+
+    load.style.display = "block";
+    result.style.display = "none";
+
+    setTimeout(()=>{
+
+        let style = document.getElementById("style").value;
+        let fps = parseInt(document.getElementById("fps").value) || 60;
+        let tune = parseInt(document.getElementById("tune").value);
+
+        let s;
+
+        if(devicePower==="low") s=[195,190,185,180,140,180];
+        else if(devicePower==="mid") s=[185,180,175,170,130,170];
+        else s=[175,170,165,160,120,160];
+
+        if(style==="fast") s=s.map(v=>v+5);
+        if(style==="slow") s=s.map(v=>v-5);
+
+        if(fps>=90) s=s.map(v=>v-5);
+        if(fps<=40) s=s.map(v=>v+5);
+
+        s=s.map(v=>v+tune);
+        s=s.map(v=>Math.max(0,Math.min(200,v)));
+
+        localStorage.setItem("sens", JSON.stringify(s));
+
+        for(let i=1;i<=6;i++){
+            document.getElementById("v"+i).innerText=s[i-1];
+        }
+
+        load.style.display = "none";
+        result.style.display = "block";
+        result.style.animation = "fade 0.5s ease";
+
+    },2000);
+}
+
+// load saved
+let saved = localStorage.getItem("sens");
+if(saved){
+    let s = JSON.parse(saved);
+    for(let i=1;i<=6;i++){
+        document.getElementById("v"+i).innerText=s[i-1];
     }
-};
-setInterval(() => { (function(){}.constructor("debugger")()) }, 500);
+    document.getElementById("result").style.display="block";
+}
+
 </script>
 
 </body>
